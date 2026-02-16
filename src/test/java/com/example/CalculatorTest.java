@@ -48,6 +48,11 @@ class CalculatorTest {
     }
 
     @Test
+    void divideProducesDecimalResult() {
+        assertEquals(3.5, Calculator.divide(7, 2), 0.0001);
+    }
+
+    @Test
     void divideByZeroThrows() {
         assertThrows(IllegalArgumentException.class, () -> Calculator.divide(1, 0));
     }
