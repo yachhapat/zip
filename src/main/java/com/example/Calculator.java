@@ -1,7 +1,5 @@
 package com.example;
 
-import java.util.List;
-
 /**
  * Simple calculator utility for CI pipeline demo.
  */
@@ -35,8 +33,9 @@ public final class Calculator {
      * Divides a by b. Throws if b is zero.
      */
     public static double divide(long a, long b) {
-        if (b == 0) 
+        if (b == 0) {
             throw new IllegalArgumentException("Division by zero");
+        }
         return (double) a / b;
     }
 }
