@@ -1,0 +1,14 @@
+target/
+node_modules/
+package-lock.json
+*.class
+*.pkg
+*.jar
+*.war
+.DS_Store
+.idea/
+*.iml
+*.log
+.settings/
+.project
+.classpath
