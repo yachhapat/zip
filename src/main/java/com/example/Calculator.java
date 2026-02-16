@@ -1,5 +1,7 @@
 package com.example;
 
+import java.util.List;
+
 /**
  * Simple calculator utility for CI pipeline demo.
  */
