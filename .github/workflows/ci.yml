@@ -1,4 +1,4 @@
-# CI Pipeline: Lint + Unit Tests
+# CI: Checkstyle (linter) + JUnit unit tests
 # Runs on every PR and every push to master
 name: CI
 
@@ -23,11 +23,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Install Maven
-        run: sudo apt-get update && sudo apt-get install -y maven
-
-      - name: Run linter (Checkstyle)
-        run: mvn checkstyle:check
+      - name: Run Checkstyle
+        run: ./mvnw -q checkstyle:check
 
       - name: Run unit tests
-        run: mvn test
+        run: ./mvnw -q test
