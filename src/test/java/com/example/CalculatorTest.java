@@ -8,6 +8,14 @@ import org.junit.jupiter.api.Test;
 class CalculatorTest {
 
     @Test
+    void calculatorInit() {
+        assertEquals(0, Calculator.add(0, 0));
+        assertEquals(0, Calculator.subtract(0, 0));
+        assertEquals(0, Calculator.multiply(0, 0));
+        assertEquals(1.0, Calculator.divide(1, 1));
+    }
+
+    @Test
     void addTwoPositiveNumbers() {
         assertEquals(5, Calculator.add(2, 3));
     }
