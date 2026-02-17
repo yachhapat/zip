@@ -91,6 +91,11 @@ class CalculatorTest {
     }
 
     @Test
+    void divideNegativeByNegative() {
+        assertEquals(3.0, Calculator.divide(-6, -2));
+    }
+
+    @Test
     void divideByZeroThrows() {
         assertThrows(IllegalArgumentException.class, () -> Calculator.divide(1, 0));
     }
