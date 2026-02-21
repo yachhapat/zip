@@ -32,7 +32,7 @@ This repository demonstrates a fully functional CI pipeline for a Maven-based Ja
 src/main/java/com/example/
     DiscountEngine.java               # Discount logic (percentage + flat discounts)
 src/test/java/com/example/
-    DiscountEngineTest.java           # JUnit 5 tests for DiscountEngine (17 tests)
+    DiscountEngineTest.java           # JUnit 5 tests for DiscountEngine (5 tests)
 checkstyle.xml                        # Checkstyle linter configuration
 pom.xml                               # Maven project descriptor
 mvnw                                  # Maven Wrapper script
@@ -93,6 +93,8 @@ ci-local.sh                           # Script to run CI checks locally
 The CI pipeline is defined in `.github/workflows/ci.yml`:
 
 ```yaml
+# CI: Checkstyle (linter) + JUnit unit tests
+# Runs on every PR and every push to main
 name: CI
 
 on:
@@ -106,10 +108,21 @@ jobs:
     name: Lint & Test
     runs-on: ubuntu-latest
     steps:
-      - Checkout code
-      - Set up JDK 21 (Temurin, with Maven cache)
-      - Run Checkstyle (linter):    ./mvnw -q checkstyle:check
-      - Run unit tests:             ./mvnw -q test
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Checkstyle
+        run: ./mvnw -q checkstyle:check
+
+      - name: Run unit tests
+        run: ./mvnw -q test
 ```
 
 ### 3.2 When the Pipeline Runs
@@ -125,7 +138,7 @@ This ensures every PR is validated before merge, and every commit on `main` is v
 
 **Check 1 — Linter (Checkstyle)**
 
-- Command: `./mvnw checkstyle:check`
+- Command: `./mvnw -q checkstyle:check`
 - Configuration: `checkstyle.xml` in the project root
 - Rules enforced:
   - **AvoidStarImport** — No wildcard imports (`import java.util.*`)
@@ -141,16 +154,17 @@ This ensures every PR is validated before merge, and every commit on `main` is v
 
 - Command: `./mvnw test`
 - Framework: JUnit Jupiter 5.10.2 via Maven Surefire 3.2.5
-- Total tests: **36** across two test classes
+- Total tests: **5** in `DiscountEngineTest.java`
 
-**DiscountEngineTest.java** — 17 tests:
+**DiscountEngineTest.java** — 5 tests:
 
-| Category | Tests | What They Verify |
-|----------|-------|-----------------|
-| Happy Path | 4 | SUMMER20 → $80, WELCOME10 → $90, no code, empty code |
-| PRO User | 3 | PRO + SUMMER20, PRO + WELCOME10, PRO + no code |
-| Boundary Values | 5 | $5 PRO → $0, $3 PRO → $0, $0 price, $0 PRO, $4 SUMMER20 PRO → $0 |
-| Invalid Input | 5 | String "abc", null price, negative price, bad code, bad user type, null user type |
+| Test | What It Verifies |
+|------|------------------|
+| `summer20On100ReturnsEighty` | SUMMER20 on $100 → $80 |
+| `welcome10On100ReturnsNinety` | WELCOME10 on $100 → $90 |
+| `proUserGetsExtraFiveDollarsOff` | PRO + SUMMER20 on $100 → $75 |
+| `fiveDollarProDiscountClampsToZero` | $5 with PRO, no code → $0 (floor) |
+| `invalidDiscountCodeThrows` | Invalid code "BOGUS" throws with expected message |
 
 ---
 
@@ -167,7 +181,7 @@ These settings are configured in **GitHub > Repository > Settings**:
 | Required status check | **Lint & Test** (the GitHub Actions job name) |
 | Require branches to be up to date before merging | **Enabled** |
 
-This ensures no PR can be merged unless both Checkstyle and all 17 unit tests pass.
+This ensures no PR can be merged unless both Checkstyle and all 5 unit tests pass.
 
 ### 4.2 Required PR Review (Settings > Branches)
 
@@ -196,10 +210,10 @@ This enforces that all PRs are merged as a single squashed commit, producing a c
 1. Developer creates a **feature branch** from `main`.
 2. Developer pushes code and opens a **pull request** targeting `main`.
 3. GitHub Actions automatically triggers the **CI workflow**:
-   - Step 1: Checkout code
-   - Step 2: Set up JDK 21
-   - Step 3: Run Checkstyle (`./mvnw checkstyle:check`)
-   - Step 4: Run unit tests (`./mvnw test`)
+   - **Checkout** — `actions/checkout@v4`
+   - **Set up JDK 21** — Temurin 21 with Maven cache (`actions/setup-java@v4`)
+   - **Run Checkstyle** — `./mvnw -q checkstyle:check`
+   - **Run unit tests** — `./mvnw -q test`
 4. PR page shows check status:
    - Green checkmark if all checks pass
    - Red X if any check fails (with link to logs)
@@ -305,7 +319,7 @@ This script:
 Individual commands:
 
 ```bash
-./mvnw checkstyle:check    # Linter only
+./mvnw -q checkstyle:check    # Linter only
 ./mvnw test                # Unit tests only
 ./mvnw verify              # Full build lifecycle
 ```
@@ -320,7 +334,7 @@ Individual commands:
 | **CI tool** | GitHub Actions |
 | **Workflow file** | `.github/workflows/ci.yml` |
 | **Linter** | Checkstyle (`checkstyle.xml`) |
-| **Unit tests** | JUnit 5 — `DiscountEngineTest.java` (17 tests) |
+| **Unit tests** | JUnit 5 — `DiscountEngineTest.java` (5 tests) |
 | **Branch** | `main` (protection + push trigger) |
 | **Required checks** | "Lint & Test" job must pass |
 | **Required approvals** | 1 PR review approval |
