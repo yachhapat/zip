@@ -10,7 +10,7 @@ class DiscountEngineTest {
 
     @Test
     void summer20On100ReturnsEighty() {
-        assertEquals(70.0, DiscountEngine.applyDiscount(100.0, "SUMMER20", "GUEST"));
+        assertEquals(80.0, DiscountEngine.applyDiscount(100.0, "SUMMER20", "GUEST"));
     }
 
     @Test
