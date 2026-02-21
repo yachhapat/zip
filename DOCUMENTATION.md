@@ -31,10 +31,8 @@ This repository demonstrates a fully functional CI pipeline for a Maven-based Ja
 .github/workflows/ci.yml             # GitHub Actions CI workflow
 src/main/java/com/example/
     DiscountEngine.java               # Discount logic (percentage + flat discounts)
-    Calculator.java                   # Calculator utility
 src/test/java/com/example/
     DiscountEngineTest.java           # JUnit 5 tests for DiscountEngine (17 tests)
-    CalculatorTest.java               # JUnit 5 tests for Calculator (19 tests)
 checkstyle.xml                        # Checkstyle linter configuration
 pom.xml                               # Maven project descriptor
 mvnw                                  # Maven Wrapper script
@@ -154,16 +152,6 @@ This ensures every PR is validated before merge, and every commit on `main` is v
 | Boundary Values | 5 | $5 PRO → $0, $3 PRO → $0, $0 price, $0 PRO, $4 SUMMER20 PRO → $0 |
 | Invalid Input | 5 | String "abc", null price, negative price, bad code, bad user type, null user type |
 
-**CalculatorTest.java** — 19 tests:
-
-| Category | Tests | What They Verify |
-|----------|-------|-----------------|
-| Init | 1 | Smoke test of all operations |
-| add() | 4 | Positive, negative, zero, mixed |
-| subtract() | 3 | Basic, negative result, zero |
-| multiply() | 4 | Basic, zero, one negative, two negatives |
-| divide() | 7 | Basic, decimal, by one, negative, neg÷neg, zero throws, exception message |
-
 ---
 
 ## 4. Branch Protection Rules
@@ -179,7 +167,7 @@ These settings are configured in **GitHub > Repository > Settings**:
 | Required status check | **Lint & Test** (the GitHub Actions job name) |
 | Require branches to be up to date before merging | **Enabled** |
 
-This ensures no PR can be merged unless both Checkstyle and all 36 unit tests pass.
+This ensures no PR can be merged unless both Checkstyle and all 17 unit tests pass.
 
 ### 4.2 Required PR Review (Settings > Branches)
 
@@ -332,7 +320,7 @@ Individual commands:
 | **CI tool** | GitHub Actions |
 | **Workflow file** | `.github/workflows/ci.yml` |
 | **Linter** | Checkstyle (`checkstyle.xml`) |
-| **Unit tests** | JUnit 5 — `DiscountEngineTest.java` (17 tests) + `CalculatorTest.java` (19 tests) |
+| **Unit tests** | JUnit 5 — `DiscountEngineTest.java` (17 tests) |
 | **Branch** | `main` (protection + push trigger) |
 | **Required checks** | "Lint & Test" job must pass |
 | **Required approvals** | 1 PR review approval |
